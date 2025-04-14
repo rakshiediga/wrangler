@@ -140,7 +140,12 @@ numberRange
  ;
 
 value
- : String | Number | Column | Bool
+ : String
+ | Number
+ | Column
+ | Bool
+ | BYTE_SIZE
+ | TIME_DURATION
  ;
 
 ecommand
@@ -216,7 +221,7 @@ NotStartsWith : '!^';
 EndsWith : '=$';
 NotEndsWith : '!$';
 PlusEqual : '+=';
-SubEqual : '-=';
+SubEqual : '-='; 
 MulEqual : '*=';
 DivEqual : '/=';
 PerEqual : '%=';
@@ -257,6 +262,14 @@ Number
  : Int ('.' Digit*)?
  ;
 
+BYTE_SIZE
+ : Digit+ ('.' Digit+)? BYTE_UNIT
+ ;
+
+TIME_DURATION
+ : Digit+ ('.' Digit+)? TIME_UNIT
+ ;
+
 Identifier
  : [a-zA-Z_\-] [a-zA-Z_0-9\-]*
  ;
@@ -293,7 +306,15 @@ UnicodeEscape
    ;
 
 fragment
-   HexDigit : ('0'..'9'|'a'..'f'|'A'..'F') ;
+HexDigit : ('0'..'9'|'a'..'f'|'A'..'F') ;
+
+fragment BYTE_UNIT : 'B' | 'KB' | 'MB' | 'GB' | 'TB';
+fragment TIME_UNIT : 'ns' | 'us' | 'ms' | 's' | 'm' | 'h';
+fragment Digit : [0-9];
+fragment Int
+ : '-'? [1-9] Digit* [L]*
+ | '0'
+ ;
 
 Comment
  : ('//' ~[\r\n]* | '/*' .*? '*/' | '--' ~[\r\n]* ) -> skip
@@ -301,13 +322,4 @@ Comment
 
 Space
  : [ \t\r\n\u000C]+ -> skip
- ;
-
-fragment Int
- : '-'? [1-9] Digit* [L]*
- | '0'
- ;
-
-fragment Digit
- : [0-9]
  ;
